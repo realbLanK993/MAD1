@@ -4,6 +4,7 @@ from .models import db, User
 from .controllers.auth import auth_bp
 from .controllers.admin import admin_bp
 from .controllers.user import user_bp
+from .controllers.main import main_bp
 def create_app():
     app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.sqlite3"  # Point to instance folder
@@ -20,6 +21,7 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(user_bp)
+    app.register_blueprint(main_bp)
     # Create tables and admin user
     with app.app_context():
         db.create_all()

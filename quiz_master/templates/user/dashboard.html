@@ -1,10 +1,56 @@
-<!-- templates/user/dashboard.html -->
 {% extends "base.html" %}
 {% block title %}User Dashboard - Quiz Master{% endblock %}
 {% block content %}
 <div class="container mt-5">
-    <h2>User Dashboard</h2>
-    <p>Welcome, {{ current_user.full_name }}! This is your dashboard.</p>
-    <p>(Placeholder content - to be developed)</p>
+    <h2 class="mb-4">Welcome, {{ user.full_name }}!</h2>
+    <h3 class="mb-3">Available Quizzes</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Sl. No.</th>
+                <th>Name</th>
+                <th>Duration</th>
+                <th>No. of Questions</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for quiz in quizzes %}
+            <tr>
+                <td>{{ quiz.sl_no }}</td>
+                <td>{{ quiz.name }}</td>
+                <td>{{ quiz.duration }}</td>
+                <td>{{ quiz.questions_count }}</td>
+                <td>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary action-btn" data-bs-toggle="modal" data-bs-target="#quizDetailModal{{ quiz.id }}">View Details</button>
+                        <a href="{{ url_for('user.attempt_quiz', quiz_id=quiz.id) }}" class="btn btn-success action-btn">Attempt</a>
+                    </div>
+                </td>
+            </tr>
+            <!-- Quiz Detail Modal -->
+            <div class="modal fade" id="quizDetailModal{{ quiz.id }}" tabindex="-1" aria-labelledby="quizDetailModalLabel{{ quiz.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="quizDetailModalLabel{{ quiz.id }}">{{ quiz.name }} Details</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Name:</strong> {{ quiz.name }}</p>
+                            <p><strong>Subject:</strong> {{ quiz.subject_name }}</p>
+                            <p><strong>Chapter:</strong> {{ quiz.chapter_name }}</p>
+                            <p><strong>Duration:</strong> {{ quiz.duration }}</p>
+                            <p><strong>Number of Questions:</strong> {{ quiz.questions_count }}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

@@ -1,0 +1,25 @@
+<!-- templates/main/landing.html -->
+{% extends "base.html" %}
+{% block title %}Quiz Master{% endblock %}
+{% block content %}
+<div class="container mt-5 text-center">
+    <h1 class="display-4 mb-3">Welcome to Quiz Master</h1>
+    <p class="lead mb-4">Master your knowledge with interactive quizzes designed for learning and growth.</p>
+    
+    {% if user.is_authenticated %}
+        <p class="mb-4">Ready to test your skills?</p>
+        <div class="d-flex gap-2 justify-content-center">
+            <a href="{{ url_for('user.dashboard') }}" class="btn btn-primary action-btn">Go to Dashboard</a>
+            {% if user.role == 'admin' %}
+                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary action-btn">Admin Dashboard</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <p class="mb-4">Join today to start your learning journey!</p>
+        <div class="d-flex gap-2 justify-content-center">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary action-btn">Register</a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary action-btn">Login</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

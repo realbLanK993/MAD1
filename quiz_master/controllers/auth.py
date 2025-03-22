@@ -93,4 +93,4 @@ def login():
 def logout():
     logout_user()  # Clear the user session
     flash("Logged out successfully.", "success")
-    return redirect(url_for("auth.login"))
+    return redirect(url_for("main.landing"))

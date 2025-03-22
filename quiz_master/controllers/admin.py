@@ -2,6 +2,8 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_required, current_user
 from quiz_master.models import db, User, Subject, Score, Chapter, Quiz, Question
+from sqlalchemy import func
+from datetime import datetime, timedelta
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin", template_folder="templates")
 
@@ -11,14 +13,34 @@ def dashboard():
     if current_user.role != "admin":
         return redirect(url_for("user.dashboard"))
     
+    # Total users (unchanged)
     total_users = User.query.filter_by(role="user").count()
-    users_took_test = User.query.join(Score).distinct().count()
-    high_scorers = User.query.join(Score).filter(Score.total_scored >= 80).distinct().count()
-    
+
+    # Chart 1: Average Score per Quiz
+    quiz_scores = db.session.query(
+        Quiz.id, Quiz.name, func.avg(Score.total_scored).label('avg_score'), func.count(Score.id).label('attempts')
+    ).outerjoin(Score, Quiz.id == Score.quiz_id).group_by(Quiz.id, Quiz.name).all()
+    quiz_chart_data = {
+        "labels": [quiz.name for quiz in quiz_scores],
+        "avg_scores": [float(quiz.avg_score or 0) for quiz in quiz_scores],  # Convert None to 0
+        "attempts": [quiz.attempts for quiz in quiz_scores]  # For tooltip or secondary metric
+    }
+
+    # Chart 2: User Activity Over Time (last 7 days)
+    last_week = datetime.utcnow() - timedelta(days=7)
+    activity_data = db.session.query(
+        func.date(Score.time_stamp_of_attempt).label('date'),
+        func.count(Score.id).label('attempts')
+    ).filter(Score.time_stamp_of_attempt >= last_week).group_by(func.date(Score.time_stamp_of_attempt)).all()
+    activity_chart_data = {
+        "labels": [row.date for row in activity_data],  # Use string directly
+        "attempts": [row.attempts for row in activity_data]
+    }
+
     return render_template("admin/dashboard.html", 
                          total_users=total_users, 
-                         users_took_test=users_took_test, 
-                         high_scorers=high_scorers)
+                         quiz_chart_data=quiz_chart_data,
+                         activity_chart_data=activity_chart_data)
 
 @admin_bp.route("/subjects", methods=["GET", "POST"])
 @login_required

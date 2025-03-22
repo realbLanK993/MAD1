@@ -14,45 +14,78 @@
                 <p class="display-6">{{ total_users }}</p>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card p-3 mb-3">
-                <h5>Users Took Tests</h5>
-                <p class="display-6">{{ users_took_test }}</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-3 mb-3">
-                <h5>High Scorers (≥80%)</h5>
-                <p class="display-6">{{ high_scorers }}</p>
-            </div>
-        </div>
     </div>
 
-    <!-- Chart -->
-    <div class="card p-3">
-        <canvas id="statsChart" height="100"></canvas>
+    <!-- Charts -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card p-3 mb-3">
+                <h5>Average Score per Quiz</h5>
+                <canvas id="quizScoreChart" height="200"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card p-3 mb-3">
+                <h5>Quiz Attempts (Last 7 Days)</h5>
+                <canvas id="activityChart" height="200"></canvas>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- Chart.js -->
-<script src="{{ url_for('static', filename='lib/chart.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const ctx = document.getElementById('statsChart').getContext('2d');
-        new Chart(ctx, {
+        // Chart 1: Average Score per Quiz (Bar Chart)
+        const quizCtx = document.getElementById('quizScoreChart').getContext('2d');
+        new Chart(quizCtx, {
             type: 'bar',
             data: {
-                labels: ['Total Users', 'Test Takers', 'High Scorers'],
+                labels: {{ quiz_chart_data.labels|tojson }},
                 datasets: [{
-                    label: 'User Statistics',
-                    data: [{{ total_users }}, {{ users_took_test }}, {{ high_scorers }}],
-                    backgroundColor: ['#007bff', '#28a745', '#ffc107'],
+                    label: 'Average Score',
+                    data: {{ quiz_chart_data.avg_scores|tojson }},
+                    backgroundColor: '#007bff',
                     borderWidth: 1
                 }]
             },
             options: {
                 scales: {
-                    y: { beginAtZero: true }
+                    y: { beginAtZero: true, title: { display: true, text: 'Average Score' } }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let attempts = {{ quiz_chart_data.attempts|tojson }}[context.dataIndex];
+                                return `Avg Score: ${context.raw}, Attempts: ${attempts}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart 2: User Activity Over Time (Line Chart)
+        const activityCtx = document.getElementById('activityChart').getContext('2d');
+        new Chart(activityCtx, {
+            type: 'line',
+            data: {
+                labels: {{ activity_chart_data.labels|tojson }},
+                datasets: [{
+                    label: 'Attempts',
+                    data: {{ activity_chart_data.attempts|tojson }},
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: 'Attempts' } }
                 },
                 plugins: {
                     legend: { display: false }

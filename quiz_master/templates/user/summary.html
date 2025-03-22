@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Summary - Quiz Master{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Summary</h2>
+    <p>Welcome, {{ user.full_name }}! Here’s your performance overview.</p>
+
+    <!-- Stats -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card p-3 mb-3">
+                <h5>Total Attempts</h5>
+                <p class="display-6">{{ total_attempts }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3 mb-3">
+                <h5>Average Score</h5>
+                <p class="display-6">{{ avg_score }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3 mb-3">
+                <h5>Quizzes Attempted</h5>
+                <p class="display-6">{{ quizzes_attempted }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="card p-3">
+        <h5>Your Scores Over Time</h5>
+        <canvas id="scoreChart" height="200"></canvas>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('scoreChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ chart_data.labels|tojson }},
+                datasets: [{
+                    label: 'Score',
+                    data: {{ chart_data.scores|tojson }},
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: 'Score' } }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let quiz = {{ chart_data.quiz_names|tojson }}[context.dataIndex];
+                                return `Quiz: ${quiz}, Score: ${context.raw}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
