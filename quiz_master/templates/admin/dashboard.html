@@ -1,0 +1,64 @@
+<!-- templates/admin/dashboard.html -->
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - Quiz Master{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Admin Dashboard</h2>
+    <p>Welcome, {{ current_user.full_name }}!</p>
+
+    <!-- Statistics -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card p-3 mb-3">
+                <h5>Total Users</h5>
+                <p class="display-6">{{ total_users }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3 mb-3">
+                <h5>Users Took Tests</h5>
+                <p class="display-6">{{ users_took_test }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3 mb-3">
+                <h5>High Scorers (≥80%)</h5>
+                <p class="display-6">{{ high_scorers }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="card p-3">
+        <canvas id="statsChart" height="100"></canvas>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="{{ url_for('static', filename='lib/chart.min.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('statsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Total Users', 'Test Takers', 'High Scorers'],
+                datasets: [{
+                    label: 'User Statistics',
+                    data: [{{ total_users }}, {{ users_took_test }}, {{ high_scorers }}],
+                    backgroundColor: ['#007bff', '#28a745', '#ffc107'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

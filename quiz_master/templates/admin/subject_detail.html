@@ -1,0 +1,111 @@
+<!-- templates/admin/subject_detail.html -->
+{% extends "base.html" %}
+{% block title %}{{ subject.name }} - Quiz Master{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">{{ subject.name }}</h2>
+        <button class="btn btn-add-subject" data-bs-toggle="modal" data-bs-target="#addChapterModal">Add Chapter</button>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Total Quizzes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for chapter in chapters %}
+            <tr>
+                <td>{{ chapter.id }}</td>
+                <td>{{ chapter.name }}</td>
+                <td>{{ chapter.description or 'N/A' }}</td>
+                <td>{{ chapter.quizzes|length }}</td>
+                <td>
+                    <button class="btn btn-sm link-primary" data-bs-toggle="modal" data-bs-target="#editChapterModal{{ chapter.id }}">Edit</button>
+                    <button class="btn btn-sm link-danger" data-bs-toggle="modal" data-bs-target="#deleteChapterModal{{ chapter.id }}">Delete</button>
+                </td>
+            </tr>
+            <!-- Edit Modal -->
+            <div class="modal fade" id="editChapterModal{{ chapter.id }}" tabindex="-1" aria-labelledby="editChapterModalLabel{{ chapter.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editChapterModalLabel{{ chapter.id }}">Edit Chapter</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="{{ url_for('admin.edit_chapter', subject_id=subject.id, chapter_id=chapter.id) }}">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="name{{ chapter.id }}" class="form-label">Chapter Name</label>
+                                    <input type="text" class="form-control" id="name{{ chapter.id }}" name="name" value="{{ chapter.name }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="description{{ chapter.id }}" class="form-label">Description (optional)</label>
+                                    <textarea class="form-control" id="description{{ chapter.id }}" name="description" rows="3">{{ chapter.description or '' }}</textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Delete Modal -->
+            <div class="modal fade" id="deleteChapterModal{{ chapter.id }}" tabindex="-1" aria-labelledby="deleteChapterModalLabel{{ chapter.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteChapterModalLabel{{ chapter.id }}">Delete Chapter</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="{{ url_for('admin.delete_chapter', subject_id=subject.id, chapter_id=chapter.id) }}">
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete "{{ chapter.name }}"?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Add Chapter Modal -->
+    <div class="modal fade" id="addChapterModal" tabindex="-1" aria-labelledby="addChapterModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addChapterModalLabel">Add New Chapter</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="{{ url_for('admin.add_chapter', subject_id=subject.id) }}">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Chapter Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description (optional)</label>
+                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Chapter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

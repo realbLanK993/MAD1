@@ -1,0 +1,86 @@
+<!-- templates/admin/quiz_detail.html -->
+{% extends "base.html" %}
+{% block title %}{{ quiz.name }} - Quiz Master{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">{{ quiz.name }}</h2>
+        <button class="btn btn-add-subject" data-bs-toggle="modal" data-bs-target="#addQuestionModal">Add New Question</button>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Question</th>
+                <th>Option 1</th>
+                <th>Option 2</th>
+                <th>Option 3</th>
+                <th>Option 4</th>
+                <th>Correct</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for question in questions %}
+            <tr>
+                <td>{{ question.id }}</td>
+                <td>{{ question.question_statement }}</td>
+                <td>{{ question.option1 }}</td>
+                <td>{{ question.option2 }}</td>
+                <td>{{ question.option3 or 'N/A' }}</td>
+                <td>{{ question.option4 or 'N/A' }}</td>
+                <td>{{ question.correct_option }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Add Question Modal -->
+    <div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addQuestionModalLabel">Add New Question</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="{{ url_for('admin.add_question', quiz_id=quiz.id) }}">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="text" class="form-label">Question Text</label>
+                            <textarea class="form-control" id="text" name="text" rows="2" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="option1" class="form-label">Option 1 (required)</label>
+                            <input type="text" class="form-control" id="option1" name="option1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="option2" class="form-label">Option 2 (required)</label>
+                            <input type="text" class="form-control" id="option2" name="option2" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="option3" class="form-label">Option 3 (optional)</label>
+                            <input type="text" class="form-control" id="option3" name="option3">
+                        </div>
+                        <div class="mb-3">
+                            <label for="option4" class="form-label">Option 4 (optional)</label>
+                            <input type="text" class="form-control" id="option4" name="option4">
+                        </div>
+                        <div class="mb-3">
+                            <label for="correct_option" class="form-label">Correct Option (1-4)</label>
+                            <select class="form-control" id="correct_option" name="correct_option" required>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Question</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

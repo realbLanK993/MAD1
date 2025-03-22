@@ -1,0 +1,52 @@
+<!-- templates/admin/subjects.html -->
+{% extends "base.html" %}
+{% block title %}Subjects - Quiz Master{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Subjects</h2>
+        <button class="btn btn-add-subject" data-bs-toggle="modal" data-bs-target="#addSubjectModal">Add Subject</button>
+    </div>
+    <div class="row">
+        {% for subject in subjects %}
+        <div class="col-md-4 mb-3">
+            <a href="{{ url_for('admin.subject_detail', subject_id=subject.id) }}" class="text-decoration-none">
+                <div class="card p-3">
+                    <h5>{{ subject.name }}</h5>
+                    <p class="text-muted">{{ subject.description or 'No description' }}</p>
+                    <p>Chapters: {{ subject.chapters_count }}</p>
+                    <p>Students Enrolled: {{ subject.enrolled }}</p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="addSubjectModal" tabindex="-1" aria-labelledby="addSubjectModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSubjectModalLabel">Add New Subject</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="{{ url_for('admin.subjects') }}">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Subject Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description (optional)</label>
+                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add Subject</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

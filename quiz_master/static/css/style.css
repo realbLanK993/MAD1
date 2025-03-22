@@ -1,0 +1,128 @@
+/* static/css/style.css */
+body {
+    /* min-height: 100vh; */
+    /* display: flex; */
+    /* flex-direction: column */
+    /* justify-content: center; */
+    /* align-items: center; */
+    font-family: 'Poppins', sans-serif
+}
+
+.center-parent{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+.auth-card {
+    background: #ffffff; /* White card */
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Very subtle shadow */
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px; /* Slim card */
+    border: 1px solid #f0f0f0; /* Very light border */
+}
+
+.auth-card h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333333; /* Soft dark gray for text */
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #e0e0e0; /* Light gray border */
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    background: #ffffff; /* White input background */
+    transition: border-color 0.2s ease;
+}
+
+.form-control:focus {
+    border-color: #666666; /* Medium gray on focus */
+    box-shadow: none;
+    background: #ffffff;
+}
+
+.btn-primary {
+    background: #007bff; /* Bootstrap’s default blue for simplicity */
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    width: 100%;
+    transition: background 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: #0056b3; /* Darker blue on hover */
+}
+
+.btn-link {
+    color: #007bff; /* Blue link */
+    text-decoration: none;
+    font-size: 0.9rem;
+    text-align: center;
+    display: block;
+    margin-top: 1rem;
+}
+
+.btn-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+.alert {
+    border-radius: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    border: 1px solid gray;
+}
+
+.btn-add-subject {
+    background: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.2s ease;
+}
+
+.btn-add-subject:hover {
+    background: #0056b3;
+    color: white;
+}
+
+/* Modal tweaks */
+.modal-content {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.modal-footer {
+    border-top: 1px solid #f0f0f0;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    transition: background 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}

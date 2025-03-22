@@ -1,0 +1,68 @@
+<!-- templates/admin/quizzes.html -->
+{% extends "base.html" %}
+{% block title %}Quizzes - Quiz Master{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Quizzes</h2>
+        <button class="btn btn-add-subject" data-bs-toggle="modal" data-bs-target="#addQuizModal">Add Quiz</button>
+    </div>
+    <div class="row">
+        {% for quiz in quizzes %}
+        <div class="col-md-4 mb-3">
+            <a href="{{ url_for('admin.quiz_detail', quiz_id=quiz.id) }}" class="text-decoration-none">
+                <div class="card p-3">
+                    <h5>{{ quiz.name }}</h5>
+                    <div style="display: flex; flex-direction: column; gap: 2px;padding-bottom:12px;">
+                        <span class="text-muted">{{quiz.subject_name}} </span>
+                        <span style="font-size: 14px;" class="text-muted">{{ quiz.chapter_name }}</span>
+                    </div>
+                    <p>Time: {{ quiz.time_duration or 'Not set' }}</p>
+                    <p>Questions: {{ quiz.questions_count }}</p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Add Quiz Modal -->
+    <div class="modal fade" id="addQuizModal" tabindex="-1" aria-labelledby="addQuizModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addQuizModalLabel">Add New Quiz</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="{{ url_for('admin.quizzes') }}">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Quiz Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="chapter_id" class="form-label">Chapter</label>
+                            <select class="form-control" id="chapter_id" name="chapter_id" required>
+                                {% for subject in subjects %}
+                                <optgroup label="{{ subject.name }}">
+                                    {% for chapter in subject.chapters %}
+                                    <option value="{{ chapter.id }}">{{ chapter.name }}</option>
+                                    {% endfor %}
+                                </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="time_duration" class="form-label">Time Duration (HH:MM, optional)</label>
+                            <input type="text" class="form-control" id="time_duration" name="time_duration" placeholder="e.g., 01:30">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Quiz</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
